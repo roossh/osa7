@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -118,11 +118,17 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+
+  const notify = ( message ) => {
+    setNotification(message)
+    setTimeout(() => setNotification(null), 10000)
+  }
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    notify(`New anecdote '${anecdote.content}' has been created!`)
   }
 
   const anecdoteById = (id) =>
@@ -139,12 +145,19 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const notificationDiv = () => (
+    <div>
+      {notification}
+    </div>
+  )
+
   return (
     <div>
       <Router>
         <div>
           <h1>Software anecdotes</h1>
           <Menu />
+          {notification === null ? null : notificationDiv()}
           <Route exact path='/' render={() => <AnecdoteList anecdotes={anecdotes} />} />
           <Route exact path='/anecdotes' render={() => <AnecdoteList anecdotes={anecdotes} />} />
           <Route exact path='/anecdotes/:id' render={({ match }) => <Anecdote anecdote={anecdoteById(match.params.id)}/>} />
