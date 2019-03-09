@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RpIiwiaWQiOiI1YzcxMjE2NGI3MzhiNzE3OGNiZjg1YTIiLCJpYXQiOjE1NTA5MTgwNzZ9.P666NE6Fqn7Uw5QZMie6jxaAv6XpyohMKDkWXiSOGg4
+
+{
+    "title": "Thinking of Tokens",
+    "author": "Bloggersson",
+    "url": "blogs.blog"
+}
