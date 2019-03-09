@@ -8,17 +8,15 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
+import { initialiseBlogs, addBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = (props) => {
   const [username] = useField('text')
   const [password] = useField('password')
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-
+  
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      setBlogs(blogs)
-    })
+    props.initialiseBlogs()
   }, [])
 
   useEffect(() => {
@@ -53,25 +51,27 @@ const App = (props) => {
   }
 
   const createBlog = async (blog) => {
-    const createdBlog = await blogService.create(blog)
     newBlogRef.current.toggleVisibility()
-    setBlogs(blogs.concat(createdBlog))
-    props.setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`, 'normal', 5)
+    props.addBlog(blog)
+    props.setNotification(`a new blog ${blog.title} by ${blog.author} added`, 'normal', 5)
   }
 
   const likeBlog = async (blog) => {
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
-    const updatedBlog = await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
-    props.setNotification(`blog ${updatedBlog.title} by ${updatedBlog.author} liked!`, 'normal', 5)
+    //const likedBlog = { ...blog, likes: blog.likes + 1 }
+    //const updatedBlog = await blogService.update(blog)
+    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    console.log(blog)
+    props.likeBlog(blog)
+    props.setNotification(`blog ${blog.title} by ${blog.author} liked!`, 'normal', 5)
   }
 
   const removeBlog = async (blog) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
-      const updatedBlog = await blogService.remove(blog)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
-      props.setNotification(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`,'normal', 5)
+      //const updatedBlog = await blogService.remove(blog)
+      //setBlogs(blogs.filter(b => b.id !== blog.id))
+      props.deleteBlog(blog)
+      props.setNotification(`blog ${blog.title} by ${blog.author} removed!`,'normal', 5)
     }
   }
 
@@ -114,7 +114,7 @@ const App = (props) => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
 
-      {blogs.sort(byLikes).map(blog =>
+      {props.blogs.sort(byLikes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
@@ -128,4 +128,8 @@ const App = (props) => {
   )
 }
 
-export default connect(null, { setNotification })(App)
+const mapStateToProps = (state) => ({
+  blogs: state.blogs
+})
+
+export default connect(mapStateToProps, { setNotification, initialiseBlogs, likeBlog, addBlog, deleteBlog })(App)
