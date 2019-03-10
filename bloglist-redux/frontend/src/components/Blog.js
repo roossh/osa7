@@ -18,8 +18,6 @@ const Button = styled.button`
     color: #4CAF50;
   }
 `
-
-
 const NewComment = ({ addComment, id }) => {
   const commentBlog = async (blog) => {
     addComment(blog)
@@ -27,7 +25,7 @@ const NewComment = ({ addComment, id }) => {
 
   return (
     <div>
-      <CommentForm addComment={commentBlog} id={id} />
+      <CommentForm id={id} addComment={commentBlog} />
     </div>
   )
 }
@@ -43,9 +41,9 @@ const Blog = ({ blog, like, remove, creator, addComment }) => {
   }
 
   const details = () => (
-    <div className='details'>
+    <div className='details' key={blog.id+'_main'}>
       <a href={blog.url}>{blog.url}</a>
-      <div>{blog.likes} likes
+      <div key={blog.id+'_likes'}>{blog.likes} likes
         <Button onClick={() => like(blog)}>like</Button>
       </div>
       <div>added by {blog.user.name} {creator &&(<Button onClick={() => remove(blog)}>remove </Button>)}</div>
@@ -60,7 +58,7 @@ const Blog = ({ blog, like, remove, creator, addComment }) => {
   )
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} key={blog.id}>
       <h4>{blog.title}</h4>
       <h5>written by {blog.author}</h5>
       {details()}

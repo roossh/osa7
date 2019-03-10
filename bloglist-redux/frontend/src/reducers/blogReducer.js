@@ -20,6 +20,7 @@ const reducer = (state = [], action) => {
     const commentId = action.data.id
     const blogToComment = state.find(b => b.id === commentId)
     const commentedBlog = {...blogToComment, comments: blogToComment.comments.concat(action.data.comment)}
+    console.log(commentedBlog)
     return state.map(blog => blog.id !== id ? blog : commentedBlog)
   default:
     return state
@@ -60,7 +61,8 @@ export const addBlog = (content) => {
 export const addComment = (content) => {
   return async dispatch => {
     console.log('addComment', content)
-    const newComment = await blogService.comment(content.comment, content.id)
+    console.log('stf',content)
+    const newComment = await blogService.comment(content)
     dispatch({
       type: 'COMMENT',
       data: {

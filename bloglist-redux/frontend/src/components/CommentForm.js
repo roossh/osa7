@@ -1,5 +1,7 @@
 import React from 'react'
 import { useField } from '../hooks'
+import { addComment } from '../reducers/blogReducer'
+import { connect } from 'react-redux'
 
 const CommentForm = (props) => {
   const [comment, commentReset] = useField('text')
@@ -12,6 +14,11 @@ const CommentForm = (props) => {
     })
     commentReset()
   }
+/*
+  const NewComment = ({ addComment, id }) => {
+    const commentBlog = async (blog) => {
+      addComment(blog)
+    }*/
 
   return (
     <div>
@@ -23,4 +30,4 @@ const CommentForm = (props) => {
   )
 }
 
-export default CommentForm
+export default connect(null, { addComment })(CommentForm)

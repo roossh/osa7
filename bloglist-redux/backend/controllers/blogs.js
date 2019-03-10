@@ -48,8 +48,13 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => {
   console.log('Req body', request.body)
+  console.log('Req id', request.params.id)
+  if (request.params.id === undefined) {
+    return(response.status(400).json({error: 'Cannot add comment'}))
+  }
   const comment = request.body.comment
   const blog = await Blog.findById(request.params.id)
+  console.log(comment)
   blog.comments.push(comment)
   const result = await blog.save()
   response.status(201).json(result)
