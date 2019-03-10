@@ -1,53 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
 import { initialiseBlogs, addBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { login, logout, initialiseUser } from './reducers/loginReducer'
 
 const App = (props) => {
   const [username] = useField('text')
   const [password] = useField('password')
-  const [user, setUser] = useState(null)
-  
+
   useEffect(() => {
     props.initialiseBlogs()
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    console.log('hello')
+    console.log(props)
+    props.initialiseUser()
   }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username: username.value,
-        password: password.value
-      })
-
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
+      props.login({ username: username.value, password: password.value })
     } catch (exception) {
       props.setNotification('wrong username or password', 'error', 5)
     }
   }
 
   const handleLogout = () => {
-    setUser(null)
-    blogService.destroyToken()
-    window.localStorage.removeItem('loggedBlogAppUser')
+    props.logout()
   }
 
   const createBlog = async (blog) => {
@@ -57,10 +43,6 @@ const App = (props) => {
   }
 
   const likeBlog = async (blog) => {
-    //const likedBlog = { ...blog, likes: blog.likes + 1 }
-    //const updatedBlog = await blogService.update(blog)
-    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
-    console.log(blog)
     props.likeBlog(blog)
     props.setNotification(`blog ${blog.title} by ${blog.author} liked!`, 'normal', 5)
   }
@@ -68,14 +50,12 @@ const App = (props) => {
   const removeBlog = async (blog) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
-      //const updatedBlog = await blogService.remove(blog)
-      //setBlogs(blogs.filter(b => b.id !== blog.id))
       props.deleteBlog(blog)
       props.setNotification(`blog ${blog.title} by ${blog.author} removed!`,'normal', 5)
     }
   }
-
-  if (user === null) {
+  console.log(props)
+  if (props.user === null) {
     return (
       <div>
         <h2>log in to application</h2>
@@ -100,14 +80,15 @@ const App = (props) => {
   const newBlogRef = React.createRef()
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
-
+  console.log(props)
   return (
+
     <div>
       <h2>blogs</h2>
 
       <Notification />
 
-      <p>{user.name} logged in</p>
+      <p>{props.user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel='create new' ref={newBlogRef}>
@@ -120,8 +101,8 @@ const App = (props) => {
           blog={blog}
           like={likeBlog}
           remove={removeBlog}
-          user={user}
-          creator={blog.user.username === user.username}
+          user={props.user}
+          creator={blog.user.username === props.user.username}
         />
       )}
     </div>
@@ -129,7 +110,8 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  blogs: state.blogs
+  blogs: state.blogs,
+  user: state.user,
 })
 
-export default connect(mapStateToProps, { setNotification, initialiseBlogs, likeBlog, addBlog, deleteBlog })(App)
+export default connect(mapStateToProps, { setNotification, initialiseBlogs, likeBlog, addBlog, deleteBlog, login, logout, initialiseUser })(App)
