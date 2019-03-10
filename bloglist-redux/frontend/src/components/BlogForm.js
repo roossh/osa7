@@ -30,17 +30,17 @@ const BlogForm = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           title:
-          <Input {...title} />
+          <Input id='title' {...title} />
         </div>
         <div>
           author:
-          <Input {...author} />
+          <Input id = 'author' {...author} />
         </div>
         <div>
           url:
-          <Input {...url} />
+          <Input id = 'url' {...url} />
         </div>
-        <button type='submit'>create</button>
+        <button type='submit' id='createbutton'>create</button>
       </form>
     </div>
   )
