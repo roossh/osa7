@@ -1,7 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import CommentForm from './CommentForm'
+import { connect } from 'react-redux'
+import { addComment } from '../reducers/blogReducer'
 
-const Blog = ({ blog, like, remove, creator }) => {
+
+const NewComment = ({ addComment, id }) => {
+  const commentBlog = async (blog) => {
+    addComment(blog)
+  }
+
+  return (
+    <div>
+      <CommentForm addComment={commentBlog} id={id} />
+    </div>
+  )
+}
+
+const Blog = ({ blog, like, remove, creator, addComment, setNotification }) => {
 
 
   const blogStyle = {
@@ -20,6 +36,9 @@ const Blog = ({ blog, like, remove, creator }) => {
       </div>
       <div>added by {blog.user.name}</div>
       {creator &&(<button onClick={() => remove(blog)}>remove </button>)}
+      <h3>Comments</h3>
+      <NewComment addComment={addComment} id={blog.id} />
+      {blog.comments.map(comment => <li key={comment}>{comment}</li>)}
     </div>
   )
 
@@ -37,4 +56,4 @@ Blog.propTypes = {
   creator: PropTypes.bool.isRequired
 }
 
-export default Blog
+export default connect(null, { addComment })(Blog)

@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-d
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import CommentForm from './components/CommentForm'
 import Notification from './components/Notification'
 import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
-import { initialiseBlogs, addBlog, likeBlog, deleteBlog, getBlogById } from './reducers/blogReducer'
+import { initialiseBlogs, addBlog, likeBlog, deleteBlog, getBlogById, addComment } from './reducers/blogReducer'
 import { login, logout, initialiseUser } from './reducers/loginReducer'
 import { initialiseUsers, getUserById } from './reducers/userReducer'
 
@@ -40,6 +41,7 @@ const Users = ({ users }) => (
   </div>
 )
 
+
 const Blogs = ({ removeBlog, blogs, user, byLikes, likeBlog }) => (
   <div>
     {blogs.sort(byLikes).map(blog => <li key={blog.id}>
@@ -61,7 +63,6 @@ let NewBlog = (props) => {
     </div>
   )
 }
-
 
 NewBlog = withRouter(NewBlog)
 
@@ -149,7 +150,7 @@ const App = (props) => {
           <Route exact path='/users' render={() => <Users users={props.users}/>}/>
           <Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)}/>}/>
           <Route exact path='/' render={() => <Blogs blogs={props.blogs} user={props.user} removeBlog={removeBlog} byLikes={byLikes} likeBlog={likeBlog}/>}/>
-          <Route exact path='/blogs' render={() => <Blogs blogs={props.blogs} user={props.user} removeBlog={removeBlog} byLikes={byLikes} likeBlog={likeBlog}/>}/>
+          <Route exact path='/blogs' render={() => <Blogs blogs={props.blogs} user={props.user} removeBlog={removeBlog} byLikes={byLikes} likeBlog={likeBlog} addComment={props.addComment} setNotification={props.setNotification}/>}/>
           <Route exact path='/blogs/:id' render={({ match }) => <Blog blog={blogById(match.params.id)} like={likeBlog} remove={removeBlog} user={props.user} creator={blogById(match.params.id).user.username===props.user.username}/>}/>
           <Route exact path='/create' render={() => <NewBlog addBlog={props.addBlog} setNotification={props.setNotification} />} />
         </div>
@@ -164,4 +165,4 @@ const mapStateToProps = (state) => ({
   users: state.users,
 })
 
-export default connect(mapStateToProps, { setNotification, initialiseBlogs, likeBlog, addBlog, deleteBlog, login, logout, initialiseUser, initialiseUsers, getUserById, getBlogById })(App)
+export default connect(mapStateToProps, { setNotification, initialiseBlogs, likeBlog, addBlog, deleteBlog, login, logout, initialiseUser, initialiseUsers, getUserById, getBlogById, addComment })(App)
