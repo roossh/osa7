@@ -1,5 +1,10 @@
 import React from 'react'
 import { useField } from '../hooks'
+import styled from 'styled-components'
+
+const Input = styled.input`
+  margin: 0.25em;
+`
 
 const BlogForm = (props) => {
   const [title, titleReset] = useField('text')
@@ -25,15 +30,15 @@ const BlogForm = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           title:
-          <input {...title} />
+          <Input {...title} />
         </div>
         <div>
           author:
-          <input {...author} />
+          <Input {...author} />
         </div>
         <div>
           url:
-          <input {...url} />
+          <Input {...url} />
         </div>
         <button type='submit'>create</button>
       </form>

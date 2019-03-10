@@ -57,7 +57,7 @@ export const addBlog = (content) => {
   }
 }
 
-export const addComment = (content, id) => {
+export const addComment = (content) => {
   return async dispatch => {
     console.log('addComment', content)
     const newComment = await blogService.comment(content.comment, content.id)
@@ -65,7 +65,7 @@ export const addComment = (content, id) => {
       type: 'COMMENT',
       data: {
         comment: content.comment,
-        id: id
+        id: content.id
       },
     })
   }

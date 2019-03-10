@@ -3,6 +3,21 @@ import PropTypes from 'prop-types'
 import CommentForm from './CommentForm'
 import { connect } from 'react-redux'
 import { addComment } from '../reducers/blogReducer'
+import styled from 'styled-components'
+import { Table } from 'semantic-ui-react'
+
+const Button = styled.button`
+  background: #4CAF50;
+  color: white;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: none;
+  :hover {
+    background: white;
+    color: #4CAF50;
+  }
+`
 
 
 const NewComment = ({ addComment, id }) => {
@@ -17,8 +32,7 @@ const NewComment = ({ addComment, id }) => {
   )
 }
 
-const Blog = ({ blog, like, remove, creator, addComment, setNotification }) => {
-
+const Blog = ({ blog, like, remove, creator, addComment }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -32,13 +46,16 @@ const Blog = ({ blog, like, remove, creator, addComment, setNotification }) => {
     <div className='details'>
       <a href={blog.url}>{blog.url}</a>
       <div>{blog.likes} likes
-        <button onClick={() => like(blog)}>like</button>
+        <Button onClick={() => like(blog)}>like</Button>
       </div>
-      <div>added by {blog.user.name}</div>
-      {creator &&(<button onClick={() => remove(blog)}>remove </button>)}
+      <div>added by {blog.user.name} {creator &&(<Button onClick={() => remove(blog)}>remove </Button>)}</div>
       <h3>Comments</h3>
       <NewComment addComment={addComment} id={blog.id} />
-      {blog.comments.map(comment => <li key={comment}>{comment}</li>)}
+      <Table striped celled>
+        <Table.Body>
+          {blog.comments.map(comment => <Table.Row key={comment}><Table.Cell>{comment}</Table.Cell></Table.Row>)}
+        </Table.Body>
+      </Table>
     </div>
   )
 

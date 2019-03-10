@@ -3,13 +3,32 @@ import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-d
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
-import CommentForm from './components/CommentForm'
 import Notification from './components/Notification'
 import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
 import { initialiseBlogs, addBlog, likeBlog, deleteBlog, getBlogById, addComment } from './reducers/blogReducer'
 import { login, logout, initialiseUser } from './reducers/loginReducer'
 import { initialiseUsers, getUserById } from './reducers/userReducer'
+import { Container, Table } from 'semantic-ui-react'
+import styled from 'styled-components'
+
+const Button = styled.button`
+  background: #4CAF50;
+  color: white;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: none;
+  :hover {
+    background: white;
+    color: #4CAF50;
+  }
+`
+const H2 = styled.h2`
+  font-size: 5em;
+  color: #634f80;
+  font-family: "Verdana", Sans-serif;
+`
 
 const Menu = () => {
   const padding = {
@@ -26,7 +45,7 @@ const Menu = () => {
 
 const User = ({ user }) => (
   <div>
-    <h2>{user.name}</h2>
+    <H2>{user.name}</H2>
     <b>added blogs</b><br/>
     {user.blogs.map(blog => <li key={blog.id}>{blog.title}</li>)}
   </div>
@@ -35,18 +54,26 @@ const User = ({ user }) => (
 const Users = ({ users }) => (
   <div>
     <h2>Users</h2>
-    {users.map(user => <li key={user.id}>
-      <Link to={`users/${user.id}`}>{user.name} {user.blogs.length}</Link>
-    </li>)}
+    <Table striped celled>
+      <Table.Body>
+        {users.map(user => <Table.Row key={user.id}>
+          <Table.Cell><Link to={`users/${user.id}`}>{user.name}</Link></Table.Cell><Table.Cell>{user.blogs.length}</Table.Cell>
+        </Table.Row>)}
+      </Table.Body>
+    </Table>
   </div>
 )
 
 
-const Blogs = ({ removeBlog, blogs, user, byLikes, likeBlog }) => (
+const Blogs = ({ blogs, byLikes, likeBlog }) => (
   <div>
-    {blogs.sort(byLikes).map(blog => <li key={blog.id}>
-      <Link to={`blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
-    </li>)}
+    <Table striped celled>
+      <Table.Body>
+        {blogs.sort(byLikes).map(blog => <Table.Row key={blog.id}>
+          <Table.Cell><Link to={`blogs/${blog.id}`}>{blog.title}</Link></Table.Cell><Table.Cell>{blog.author}</Table.Cell>
+        </Table.Row>)}
+      </Table.Body>
+    </Table>
   </div>
 )
 
@@ -130,7 +157,7 @@ const App = (props) => {
             salasana
             <input {...password} />
           </div>
-          <button type="submit">kirjaudu</button>
+          <Button type="submit">kirjaudu</Button>
         </form>
       </div>
     )
@@ -139,13 +166,13 @@ const App = (props) => {
   const byLikes = (b1, b2) => b2.likes - b1.likes
   return (
 
-    <div>
+    <Container>
       <Router>
         <div>
           <Notification />
-          <h2>Bloglist</h2>
+          <H2>Bloglist</H2>
           <p>{props.user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          <Button onClick={handleLogout}>logout</Button>
           <Menu />
           <Route exact path='/users' render={() => <Users users={props.users}/>}/>
           <Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)}/>}/>
@@ -155,7 +182,7 @@ const App = (props) => {
           <Route exact path='/create' render={() => <NewBlog addBlog={props.addBlog} setNotification={props.setNotification} />} />
         </div>
       </Router>
-    </div>
+    </Container>
   )
 }
 
