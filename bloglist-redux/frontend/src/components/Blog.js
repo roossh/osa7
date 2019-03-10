@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, like, remove, creator }) => {
-  const [expanded, setExpanded] = useState(false)
+
 
   const blogStyle = {
     paddingTop: 10,
@@ -25,10 +25,7 @@ const Blog = ({ blog, like, remove, creator }) => {
 
   return (
     <div style={blogStyle}>
-      <div onClick={() => setExpanded(!expanded)} className='name'>
-        {blog.title} {blog.author}
-      </div>
-      {expanded && details()}
+      {details()}
     </div>
   )}
 

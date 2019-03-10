@@ -14,6 +14,8 @@ const reducer = (state = [], action) => {
   case 'REMOVE':
     const idToRemove = action.data.id
     return state.filter(blog => blog.id !== idToRemove)
+  case 'GET_BLOG':
+    return action.data
   default:
     return state
   }
@@ -58,6 +60,16 @@ export const deleteBlog = (content) => {
     dispatch({
       type: 'REMOVE',
       data: { id },
+    })
+  }
+}
+
+export const getBlogById = ({ id }) => {
+  return async dispatch => {
+    const blog = await blogService.getById(id)
+    dispatch({
+      type: 'GET_BLOG',
+      data: blog,
     })
   }
 }
