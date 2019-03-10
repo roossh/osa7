@@ -21,7 +21,7 @@ const reducer = (state = [], action) => {
     const blogToComment = state.find(b => b.id === commentId)
     const commentedBlog = {...blogToComment, comments: blogToComment.comments.concat(action.data.comment)}
     console.log(commentedBlog)
-    return state.map(blog => blog.id !== id ? blog : commentedBlog)
+    return state.map(blog => blog.id !== commentId ? blog : commentedBlog)
   default:
     return state
   }
@@ -70,6 +70,7 @@ export const addComment = (content) => {
         id: content.id
       },
     })
+    initialiseBlogs()
   }
 }
 
