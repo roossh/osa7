@@ -169,11 +169,10 @@ const App = (props) => {
     <Container>
       <Router>
         <div>
+          <Menu />
           <Notification />
           <H2>Bloglist</H2>
-          <p>{props.user.name} logged in</p>
-          <Button onClick={handleLogout}>logout</Button>
-          <Menu />
+          <p>{props.user.name} logged in <Button onClick={handleLogout}>logout</Button></p>
           <Route exact path='/users' render={() => <Users users={props.users}/>}/>
           <Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)}/>}/>
           <Route exact path='/' render={() => <Blogs blogs={props.blogs} user={props.user} removeBlog={removeBlog} byLikes={byLikes} likeBlog={likeBlog}/>}/>

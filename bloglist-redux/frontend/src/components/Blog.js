@@ -61,6 +61,8 @@ const Blog = ({ blog, like, remove, creator, addComment }) => {
 
   return (
     <div style={blogStyle}>
+      <h4>{blog.title}</h4>
+      <h5>written by {blog.author}</h5>
       {details()}
     </div>
   )}
